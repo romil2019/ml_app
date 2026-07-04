@@ -55,7 +55,7 @@ def add_input_slider(info):
     
            if info["file"]=="Housing.csv":
               #X=data.drop(columns=["price","date","id","condition"],axis=1)
-             X=data
+               X=data
                
               
               
