@@ -312,7 +312,7 @@ if(info["file"]=="Housing.csv"):
     
 # sextract pre trained model of Random Forest Regresor from .pkl file and scale it
     elif(model=="Random Forest Regressor"):
-       model=pickle.load(open("Housing_RandomForestRegressor.pkl","rb"))
+       model=pickle.load(open("housing_RandomForestRegressor.pkl","rb"))
         
        scaler=StandardScaler()
        x_train_scaled=scaler.fit_transform(x_train)
