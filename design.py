@@ -49,9 +49,9 @@ dataset={"Housing Dataset":{"file":"Housing.csv",
 #define functionto  take feauture input from user as  paramaeter by using slider button
 #for Hosuing predcition
 
-def add_input_slider(info):
+def add_input_slider(X_raw):
               param=dict()
-              data=pd.read_csv(info["file"])
+              data=pd.read_csv(X_raw])
     
               if info["file"]=="Housing.csv":
                   X=data.drop(columns=["price","date","id","condition"])
@@ -285,7 +285,7 @@ if(info["file"]=="Housing.csv"):
            st.scatter_chart(data=data, x='sqft_living',y='price')
 
     #It take input  by the user from slider button 
-    input_data=add_input_slider(info)
+    input_data=add_input_slider(X_raw)
             
     #display input parameter  for housing data
     with st.expander('Input Parameter'):
