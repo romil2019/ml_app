@@ -49,8 +49,12 @@ dataset={"Housing Dataset":{"file":"Housing.csv",
 #define functionto  take feauture input from user as  paramaeter by using slider button
 #for Hosuing predcition
 
-def add_input_slider(X):
-        
+def add_input_slider(info):
+           param=dict()
+           data=pd.read_csv(info["file"])
+    
+           if info["file"]=="Housing.csv":
+              X=data.drop(columns=["price","date","id","condition"],axis=1)
                
               
               
@@ -107,7 +111,7 @@ def add_input_slider(X):
              
             }
         )
-              return input_data 
+           return input_data 
 
 
 
@@ -277,7 +281,7 @@ if(info["file"]=="Housing.csv"):
            st.scatter_chart(data=data, x='sqft_living',y='price')
 
     #It take input  by the user from slider button 
-    input_data=add_input_slider(X_raw)
+    input_data=add_input_slider(info)
             
     #display input parameter  for housing data
     with st.expander('Input Parameter'):
@@ -304,7 +308,7 @@ if(info["file"]=="Housing.csv"):
     
 # sextract pre trained model of Random Forest Regresor from .pkl file and scale it
     elif(model=="Random Forest Regressor"):
-       model=pickle.load(open("housing_RandomForestRegressor.pkl","rb"))
+       model=pickle.load(open("Housing_RandomForestRegressor.pkl","rb"))
         
        scaler=StandardScaler()
        x_train_scaled=scaler.fit_transform(x_train)
@@ -328,7 +332,7 @@ if(info["file"]=="Housing.csv"):
 
 
 
-#*************************************************DATASETINSURANCE********************************************************************
+#*************************************************DATASET INSURANCE********************************************************************
 
 
 
