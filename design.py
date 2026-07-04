@@ -242,7 +242,9 @@ def add_heart_input_slider(X):
 #choose dataset to work on
 data_click=st.sidebar.selectbox("Choose Dataset",list(dataset.keys()))
 info=dataset[data_click]     #click data set
-data=pd.read_csv(info["file"],encoding="latin-1") 
+data=pd.read_csv(info["file"],encoding="latin-1")
+st.write(info["file"])
+st.write(data.columns.tolist())
 st.write("Problem type is :",info["type"])
 
       
