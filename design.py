@@ -54,8 +54,8 @@ def add_input_slider(info):
               data=pd.read_csv(info["file"])
     
               if info["file"]=="Housing.csv":
-                  #X=data.drop(columns=["price","date","id","condition"],axis=1)
-                   X=data
+                  X=data.drop(columns=["price","date","id","condition"],axis=1)
+                   
                
               
               
@@ -260,8 +260,8 @@ if(info["file"]=="Housing.csv"):
 
     #preparing raw data
     y_raw=data["price"]
-    #X_raw=data.drop(["price","id","date","condition"])
-    X_raw=data
+    X_raw=data.drop(["price","id","date","condition"])
+  
   
 
     #split data in to train,test and validation data
