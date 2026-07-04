@@ -22,12 +22,12 @@ dataset={"Housing Dataset":{"file":"Housing.csv",
                                   "Ridge"]
                          
 },
-    "Medical insurnace":{
+    "Health insurnace":{
          "file":"insurance.csv",
         "type":"Regression",
         "model":["Random Forest Regressor","XGBoost","Ridge"]
 },
-"Heart Diagnisis":{"file":"heart.csv",
+"Heart Diagnosis":{"file":"heart.csv",
                    "type":"Classification",
                    "model":["XGBoost",
                                  "Random Forest",
@@ -49,12 +49,8 @@ dataset={"Housing Dataset":{"file":"Housing.csv",
 #define functionto  take feauture input from user as  paramaeter by using slider button
 #for Hosuing predcition
 
-def add_input_slider(info):
-           param=dict()
-           data=pd.read_csv(info["file"])
-    
-           if info["file"]=="Housing.csv":
-              X=data.drop(columns=["price","date","id","condition"],axis=1)
+def add_input_slider(X):
+        
                
               
               
@@ -111,7 +107,7 @@ def add_input_slider(info):
              
             }
         )
-           return input_data 
+              return input_data 
 
 
 
@@ -242,7 +238,7 @@ def add_heart_input_slider(X):
 data_click=st.sidebar.selectbox("Choose Dataset",list(dataset.keys()))
 info=dataset[data_click]     #click data set
 data=pd.read_csv(info["file"],encoding="latin-1") 
-st.write("Problem type is :",info["type"])
+
 
       
 
@@ -256,6 +252,7 @@ model=st.sidebar.selectbox("choose model",info["model"])
 
 #check if choosen datset is Housing 
 if(info["file"]=="Housing.csv"):
+    st.title('🏠 House Price Prediction')
 
     #preparing raw data
     y_raw=data["price"]
@@ -281,14 +278,17 @@ if(info["file"]=="Housing.csv"):
            st.scatter_chart(data=data, x='sqft_living',y='price')
 
     #It take input  by the user from slider button 
-    input_data=add_input_slider(info)
+    input_data=add_input_slider(X_raw)
             
     #display input parameter  for housing data
     with st.expander('Input Parameter'):
            input_data 
 
 #extract pre trained model of Ridge model from .pkl file
+  
+
     if (model=="Ridge"):
+       st.markdown(f"<h6 style='text-align: center;'>Model: RIDGE",unsafe_allow_html=True)  
        model=pickle.load(open("house_model.pkl","rb"))
        poly=pickle.load(open("house_polys.pkl","rb"))
        scaler=pickle.load(open("house_scaler.pkl","rb")) 
@@ -308,7 +308,8 @@ if(info["file"]=="Housing.csv"):
     
 # sextract pre trained model of Random Forest Regresor from .pkl file and scale it
     elif(model=="Random Forest Regressor"):
-       model=pickle.load(open("Housing_RandomForestRegressor.pkl","rb"))
+       st.markdown(f"<h6 style='text-align: center;'>Model: Random Forest",unsafe_allow_html=True)  
+       model=pickle.load(open("housing_RandomForestRegressor.pkl","rb"))
         
        scaler=StandardScaler()
        x_train_scaled=scaler.fit_transform(x_train)
@@ -317,8 +318,10 @@ if(info["file"]=="Housing.csv"):
 
    #For XGBoost classifier midel is extract  and sclaed for train,test an input data
     elif(model=="XGBoost"):
+        st.markdown(f"<h6 style='text-align: center;'>Model:XGBoost",unsafe_allow_html=True)  
+        
         model=pickle.load(open("Housing_XGBRegressor.pkl","rb"))
-
+        
         scaler=StandardScaler()
         x_train_scaled=scaler.fit_transform(x_train)
         x_test_scaled=scaler.transform(x_test)
@@ -332,13 +335,15 @@ if(info["file"]=="Housing.csv"):
 
 
 
-#*************************************************DATASET INSURANCE********************************************************************
+#*************************************************DATASETINSURANCE********************************************************************
 
 
 
 #Check if chosen dataset by user  is insurance
     
 elif (info["file"]=="insurance.csv"):
+ 
+    st.title('🛡️ Insurance Premium Prediction')
 
   #Preparing Raw data    
 
@@ -386,7 +391,8 @@ elif (info["file"]=="insurance.csv"):
 #Check  model type,load it and scale it
 
     if(model=="Random Forest Regressor"):
-
+        
+        st.markdown(f"<h6 style='text-align: center;'>Model: Random Forest",unsafe_allow_html=True)  
         model=pickle.load(open("insurance_RandomForestRegressor.pkl","rb"))
 
 
@@ -403,6 +409,7 @@ elif (info["file"]=="insurance.csv"):
     
     #For XGBOOST model   
     elif(model=="XGBoost"):
+        st.markdown(f"<h6 style='text-align: center;'>Model: XGBoost",unsafe_allow_html=True)  
 
         #load Xgboost model from pkl file
         model=pickle.load(open("Insurance_XGBRegressor.pkl","rb"))
@@ -419,6 +426,7 @@ elif (info["file"]=="insurance.csv"):
 
        #For RIDGE model
        model=pickle.load(open("insurance_Ridgemodel.pkl","rb"))
+       st.markdown(f"<h6 style='text-align: center;'>Model: Ridge ",unsafe_allow_html=True)  
 
         # define scale and poly object
        polys=pickle.load(open("insurance_Ridgepolys.pkl","rb"))
@@ -552,10 +560,13 @@ elif(info["file"]=="spam.csv"):
    
      #load random forest model for spam data
     if(model=="Random Forest"):
+        st.markdown(f"<h3 style=text-align:center;>Model:Random Forest </h3>",unsafe_allow_html=True)
         model=pickle.load(open("spam_tree_ensemble.pkl","rb"))
     elif(model=="XGBoost"):
+        st.markdown(f"<h3 style=text-align:center;>Model:XGBoost </h3>",unsafe_allow_html=True)
         model=pickle.load(open("spam_xgbclassifier.pkl","rb"))
     elif(model=="Logistic Regression"):
+        st.markdown(f"<h3 style=text-align:center;>MOdel:Logistic Regression </h3>",unsafe_allow_html=True)
         model=pickle.load(open("spam_Logistic_regression.pkl","rb"))
 
         
@@ -574,14 +585,13 @@ y_test_cap=model.predict(x_test_scaled)
 
 
 
-#********************************************FIND ACCURACY AND DISPLAY RESULT************************************************************
+#********************************************FIND ACCURACY AND DISPLAY RESULT**************************
   
 
 #predict output of input by user data for spam data and display result
 if(info["file"]=="spam.csv"):
    
     #predict accuracy of test data
-   st.markdown(f"<h3 style=text-align:center;>Model Performance </h3>",unsafe_allow_html=True)
    acc=accuracy_score(y_test,y_test_cap)
    st.markdown(f"<h6 style='text-align: center;'>🎯 Model Test Accuracy: {acc*100:.2f}%</h6ss>",unsafe_allow_html=True)    
     
@@ -647,12 +657,14 @@ if info["file"]in ["Housing.csv" ,"insurance.csv"]:
     r2 = r2_score(y_test, y_test_cap)
     
     #Display R**2 score accuracy 
-    st.metric(label="📊 Test R² Score",value=f"{r2:.3f}") 
+    
+    st.metric(label="🎯 Model Test R² Score",value=f"{r2*100:.3f}") 
     input_cap=model.predict(input_mapped_scaled)
     if input_cap[0] < 0:
         st.warning("Input combination is outside the model's reliable range.")
     else:
         price=max(0,input_cap[0])
+        st.markdown(f"<h3 style=text-align:center;> Prediction </h3>",unsafe_allow_html=True)
         if(info["file"]=="Housing.csv"):
            st.success(f"🏡 Predicted House Price: ${price:,.2f}")
         elif (info["file"]=="insurance.csv"):
