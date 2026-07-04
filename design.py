@@ -259,7 +259,7 @@ if(info["file"]=="Housing.csv"):
 
     #preparing raw data
     y_raw=data["price"]
-    X_raw=data.drop(columns=["price","id","date","condition"])
+    X_raw=data.drop(columns=["price","id","date","condition"],axis=1)
 
     #split data in to train,test and validation data
     x_train,x_test,y_train,y_test=train_test_split(X_raw,y_raw,test_size=0.2,random_state=1234)
