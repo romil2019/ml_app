@@ -51,7 +51,7 @@ dataset={"Housing Dataset":{"file":"Housing.csv",
 
 def add_input_slider(X_raw):
               param=dict()
-              data=pd.read_csv(X_raw])
+              data=pd.read_csv(X_raw)
     
               if info["file"]=="Housing.csv":
                   X=data.drop(columns=["price","date","id","condition"])
