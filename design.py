@@ -112,7 +112,7 @@ def add_input_slider(info):
              
             }
         )
-           return input_data 
+              return input_data 
 
 
 
