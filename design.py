@@ -260,8 +260,7 @@ if(info["file"]=="Housing.csv"):
 
     #preparing raw data
     y_raw=data["price"]
-    print(repr(data.columns.tolist()))
-    X_raw=data.drop(["price","id","date","condition"])
+    X_raw=data.drop(columns=["price","id","date","condition"])
     
   
   
