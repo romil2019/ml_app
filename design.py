@@ -49,12 +49,8 @@ dataset={"Housing Dataset":{"file":"Housing.csv",
 #define functionto  take feauture input from user as  paramaeter by using slider button
 #for Hosuing predcition
 
-def add_input_slider(X_raw):
-              param=dict()
-              data=pd.read_csv(X_raw)
-    
-              X=data.drop(columns=["price","date","id","condition"])
-                   
+def add_input_slider(X):
+        
                
               
               
@@ -241,7 +237,7 @@ def add_heart_input_slider(X):
 #choose dataset to work on
 data_click=st.sidebar.selectbox("Choose Dataset",list(dataset.keys()))
 info=dataset[data_click]     #click data set
-data=pd.read_csv(info["file"],encoding="latin-1")
+data=pd.read_csv(info["file"],encoding="latin-1") 
 st.write("Problem type is :",info["type"])
 
       
@@ -260,9 +256,6 @@ if(info["file"]=="Housing.csv"):
     #preparing raw data
     y_raw=data["price"]
     X_raw=data.drop(columns=["price","id","date","condition"])
-    
-  
-  
 
     #split data in to train,test and validation data
     x_train,x_test,y_train,y_test=train_test_split(X_raw,y_raw,test_size=0.2,random_state=1234)
@@ -311,7 +304,7 @@ if(info["file"]=="Housing.csv"):
     
 # sextract pre trained model of Random Forest Regresor from .pkl file and scale it
     elif(model=="Random Forest Regressor"):
-       model=pickle.load(open("housing_RandomForestRegressor.pkl","rb"))
+       model=pickle.load(open("Housing_RandomForestRegressor.pkl","rb"))
         
        scaler=StandardScaler()
        x_train_scaled=scaler.fit_transform(x_train)
