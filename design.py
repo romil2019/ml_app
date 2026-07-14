@@ -7,9 +7,12 @@ from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.metrics import r2_score
 from sklearn.metrics import accuracy_score
 from sklearn.feature_extraction.text import TfidfVectorizer
-
-
-
+import matplotlib.pyplot as plt
+import joblib
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import root_mean_squared_error
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 
 
@@ -54,7 +57,7 @@ def add_input_slider(X):
                
               
               
-    
+          #define slider button for dataset housing.csv
 
         
               bedroom=st.sidebar.slider("bedroom",X["bedrooms"].min(),X["bedrooms"].max())
@@ -158,7 +161,7 @@ def insurance_input_slider(X):
     
 
 
-#define function for creating Input slider for dataset Heart 
+#define function for creating Input slider for dataset HeartDisease
 
 def add_heart_input_slider(X):
     Age=st.sidebar.slider("Age",X["Age"].min(),X["Age"].max())
@@ -231,7 +234,7 @@ def add_heart_input_slider(X):
 
 
 
-#****************************************CHOOSE DATASET*********************************************************************
+#*************************************CHOOSEDATASET*************************************************************************
 
 
 #choose dataset to work on
@@ -258,7 +261,7 @@ if(info["file"]=="Housing.csv"):
     y_raw=data["price"]
     X_raw=data.drop(columns=["price","id","date","condition"])
 
-    #split data in to train,test and validation data
+    #split data in to training ,testing and validation data
     x_train,x_test,y_train,y_test=train_test_split(X_raw,y_raw,test_size=0.2,random_state=1234)
     
      #Display raw data and train data
@@ -273,14 +276,14 @@ if(info["file"]=="Housing.csv"):
             st.write('**y**')
             y_train
 
-     #display data visulaization chart for housing data
+     #display data visulaization chart for dataset Housing 
     with st.expander('Data Visulaization'):
            st.scatter_chart(data=data, x='sqft_living',y='price')
 
     #It take input  by the user from slider button 
     input_data=add_input_slider(X_raw)
             
-    #display input parameter  for housing data
+    #display input parameter  for dataset housing 
     with st.expander('Input Parameter'):
            input_data 
 
@@ -306,17 +309,17 @@ if(info["file"]=="Housing.csv"):
        input_mapped=poly.transform(input_data)
        input_mapped_scaled=scaler.transform(input_mapped)
     
-# sextract pre trained model of Random Forest Regresor from .pkl file and scale it
+# extract pre trained model of Random Forest Regresor from .pkl file and scale it
     elif(model=="Random Forest Regressor"):
        st.markdown(f"<h6 style='text-align: center;'>Model: Random Forest",unsafe_allow_html=True)  
-       model=pickle.load(open("housing_RandomForestRegressor.pkl","rb"))
+       model=joblib.load(open("housing_RandomForestRegressor.pkl","rb"))
         
        scaler=StandardScaler()
        x_train_scaled=scaler.fit_transform(x_train)
        x_test_scaled=scaler.transform(x_test)
        input_mapped_scaled=scaler.transform(input_data)
 
-   #For XGBoost classifier midel is extract  and sclaed for train,test an input data
+   #Extract XGBoost classifier model   and scaled for training,testing an input data
     elif(model=="XGBoost"):
         st.markdown(f"<h6 style='text-align: center;'>Model:XGBoost",unsafe_allow_html=True)  
         
@@ -335,11 +338,11 @@ if(info["file"]=="Housing.csv"):
 
 
 
-#*************************************************DATASETINSURANCE********************************************************************
+#*************************************************DATASET INSURANCE********************************************************************
 
 
 
-#Check if chosen dataset by user  is insurance
+#Check if user choose dataset is insurance
     
 elif (info["file"]=="insurance.csv"):
  
@@ -450,7 +453,7 @@ elif (info["file"]=="insurance.csv"):
 
 #***********************************************DATASET HEART**********************************************************************
 
-#prepare train,test data for heart dataset
+#prepare train,test data for dataset HeartDiseas
 elif (info["file"]=="heart.csv"):
 
     st.title('❤️ Heart Disease Prediction')
@@ -461,10 +464,10 @@ elif (info["file"]=="heart.csv"):
     variable=['Sex','ChestPainType','RestingECG','ExerciseAngina','ST_Slope']
     X=pd.get_dummies(data=X_raw,prefix=variable,columns=variable)
 
-    #split data into train ,test
+    #Split  into training and testing data
     x_train,x_test,y_train,y_test=train_test_split(X,y_raw,test_size=0.4,random_state=55)
 
-    #display Data
+    #Display data
     with st.expander('Data'):
         st.write('**Raw data**')
         X_raw
@@ -476,7 +479,7 @@ elif (info["file"]=="heart.csv"):
         y_raw
 
     
-    #display graph
+    #Display Graph
     with st.expander('Data Visualization'):
         st.scatter_chart(data=heart_data,x='Age',y='Cholesterol')
 
@@ -490,7 +493,7 @@ elif (info["file"]=="heart.csv"):
 
         polys=pickle.load(open("heart_poly.pkl","rb"))
         scaler=pickle.load(open("heart_scaler.pkl","rb"))
-
+        st.markdown(f"<h3 style=text-align:center;>Model:Logistic Regression </h3>",unsafe_allow_html=True)
        #scale Train,Test dataand input data
         x_train_mapped=polys.transform(x_train)
         x_train_scaled=scaler.transform(x_train_mapped)
@@ -500,7 +503,7 @@ elif (info["file"]=="heart.csv"):
         x_test_scaled=scaler.transform(x_test_mapped)
 
 
-      #map and scale input given by user
+      #map and scale the input given by user
         input_mapped=polys.fit_transform(input_data)
         input_mapped_scaled=scaler.transform(input_mapped)
 
@@ -514,7 +517,10 @@ elif (info["file"]=="heart.csv"):
         x_train_scaled=scaler.fit_transform(x_train)
         x_test_scaled=scaler.transform(x_test)
         input_mapped_scaled=scaler.transform(input_data)
-        
+
+
+        st.markdown(f"<h3 style=text-align:center;>Model:RandomForest Classifier </h3>",unsafe_allow_html=True)
+
     elif(model=="XGBoost"):
         
         #unpack the model and load it
@@ -525,6 +531,8 @@ elif (info["file"]=="heart.csv"):
         x_train_scaled=scaler.fit_transform(x_train)
         x_test_scaled=scaler.transform(x_test)
         input_mapped_scaled=scaler.transform(input_data)
+        st.markdown(f"<h3 style=text-align:center;>Model:XGBoost Classifer </h3>",unsafe_allow_html=True)
+
 
 
 
@@ -532,7 +540,7 @@ elif (info["file"]=="heart.csv"):
 
 
 
-#prepare train,test data for spam dataset
+#Split Spam dataset into training and testing  data 
 elif(info["file"]=="spam.csv"):
     st.title('📩 SMS Spam Detection')
     #Prepare Raw dataset
@@ -558,19 +566,22 @@ elif(info["file"]=="spam.csv"):
     x_test_scaled=x_test
 
    
-     #load random forest model for spam data
+     #load randomforest Classifier model for dataset Spam 
     if(model=="Random Forest"):
-        st.markdown(f"<h3 style=text-align:center;>Model:Random Forest </h3>",unsafe_allow_html=True)
+        st.markdown(f"<h3 style=text-align:center;>Model:RandomForest Classifier </h3>",unsafe_allow_html=True)
         model=pickle.load(open("spam_tree_ensemble.pkl","rb"))
+        
+    #load XGBoost model for spam data
     elif(model=="XGBoost"):
-        st.markdown(f"<h3 style=text-align:center;>Model:XGBoost </h3>",unsafe_allow_html=True)
+        st.markdown(f"<h3 style=text-align:center;>Model:XGBoost Classifier</h3>",unsafe_allow_html=True)
         model=pickle.load(open("spam_xgbclassifier.pkl","rb"))
+
+    #load Logistic Regression model for spam data
     elif(model=="Logistic Regression"):
         st.markdown(f"<h3 style=text-align:center;>MOdel:Logistic Regression </h3>",unsafe_allow_html=True)
         model=pickle.load(open("spam_Logistic_regression.pkl","rb"))
 
         
-
 
 
 
@@ -590,19 +601,78 @@ y_test_cap=model.predict(x_test_scaled)
 
 #predict output of input by user data for spam data and display result
 if(info["file"]=="spam.csv"):
+  
+
    
+    
     #predict accuracy of test data
    acc=accuracy_score(y_test,y_test_cap)
-   st.markdown(f"<h6 style='text-align: center;'>🎯 Model Test Accuracy: {acc*100:.2f}%</h6ss>",unsafe_allow_html=True)    
+
+   #find confusion matrix
+   fig, ax = plt.subplots(figsize=(5,5))
+   cm = confusion_matrix(y_test, y_test_cap)
+   disp=ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=["Not Spam", "Spam"])
+
+   disp.plot(ax=ax, cmap="Blues")
+
     
+   ax.set_xlabel("predicted label",fontsize=12)
+   ax.set_ylabel("True label",fontsize=12)
+
+   for label in ax.get_xticklabels():
+       label.set_fontsize(8)
+
+   for label in ax.get_yticklabels():
+       label.set_fontsize(8)   
+
+ 
+
+    #find precison score,recalland f1 score
+   precision = precision_score(y_test, y_test_cap)
+   recall = recall_score(y_test, y_test_cap)
+   f1 = f1_score(y_test, y_test_cap)
+
+   #display confusion matrix
+   disp.plot(ax=ax)
+   st.pyplot(fig)
+
+   
+    #Display  Acccuracy,Recall,precision,f1 score
+   col1, col2, col3,col4  = st.columns(4)
+   with col1:
+       st.metric(label="Accuracy",value=f"{acc*100:.3f}")
+   with col2:
+         st.metric(label="Precision",value=f"{precision*100:.3f}")
+
+   with col3:
+         st.metric(label="recall:",value=f"{recall*100:.3f}")
+
+   with col4:
+         st.metric(label="f1:",value=f"{f1*100:.3f}")
+
+   
+
+   
+   #set example 
+   examples = {
+    "Select an example...": "",
+    "Spam Example 1": "Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&C's apply 08452810075over18's",
+    "Spam Example 2": "07732584351 - Rodger Burns - MSG = We tried to call you re your reply to our sms for a free nokia mobile + free camcorder. Please call now 08000930705 for delivery tomorrow",
+    "Spam Example 3": "Congrats! 1 year special cinema pass for 2 is yours. call 09061209465 now! C Suprman V, Matrix3, StarWars3, etc all 4 FREE! bx420-ip4-5we. 150pm. Dont miss out!",
+    "Not Spam 1": "Hey, are we meeting at 6 PM today?",
+    "Not Spam 2": "Your Amazon order has been delivered.",
+}
+
+   selected = st.selectbox("Try an example", examples.keys())
+   
     #Take Input from user
    input_message=st.text_area(
         "Enter Message here",
-        placeholder="⚠️ Please enter a message before clicking Predict."
+        placeholder="⚠️ Please enter a message before clicking Predict.",
+       value=examples[selected]
     )
     
 
-        
    input_mapped_scaled =tfid.transform([input_message])
    
    if st.button("Predict"):  
@@ -623,6 +693,7 @@ if(info["file"]=="spam.csv"):
        st.error(f"✅ Not Spam\n\nConfidence:{out[0][0]*100:.2f}%")
    df_prediction_proba=pd.DataFrame(out)
    df_prediction_proba.columns=['Not Spam','Spam']
+
   
    st.dataframe(df_prediction_proba,
                  column_config={"Not Spam":st.column_config.ProgressColumn(
@@ -646,7 +717,7 @@ if(info["file"]=="spam.csv"):
 
 
 
-
+   
 
 #*******************************************************************************************************
 
@@ -655,10 +726,38 @@ if(info["file"]=="spam.csv"):
 #Display Result like overall accuracy and  for house ,insurance dataset
 if info["file"]in ["Housing.csv" ,"insurance.csv"]:
     r2 = r2_score(y_test, y_test_cap)
+
+    # find MAE and RMSE error
+    mae = mean_absolute_error(y_test, y_test_cap)
+    rmse = root_mean_squared_error(y_test, y_test_cap)
+
+
+    #Display Graph for Insurnace and House Prediciton data
+    fig,ax=plt.subplots(figsize=(10,5)) 
+    x_sample= np.arange(1, len(y_test) + 1)
+    ax.plot(x_sample[:100],y_test[:100],label='Actual Price')
+    ax.plot(x_sample[:100],y_test_cap[:100],label='Predicted Price')
+    ax.set_ylabel('Price ($)')
+    ax.set_xlabel('Sample')
+    ax.legend()
+    ax.grid(True)
+    st.pyplot(fig)
+        
+        
+    #Display R**2 score accuracy ,MAE and RMSE
+    col1, col2, col3 = st.columns(3)
+    with col1:
+         st.metric(label="🎯 Model Test R² Score",value=f"{r2*100:.3f}")
+
+    with col2:
+         st.metric(label="MAE:",value=f"{mae:.3f}")
+
+    with col3:
+         st.metric(label="RMSE:",value=f"{rmse:.3f}")
+
+
+
     
-    #Display R**2 score accuracy 
-    
-    st.metric(label="🎯 Model Test R² Score",value=f"{r2*100:.3f}") 
     input_cap=model.predict(input_mapped_scaled)
     if input_cap[0] < 0:
         st.warning("Input combination is outside the model's reliable range.")
@@ -669,27 +768,65 @@ if info["file"]in ["Housing.csv" ,"insurance.csv"]:
            st.success(f"🏡 Predicted House Price: ${price:,.2f}")
         elif (info["file"]=="insurance.csv"):
            st.success(f"🏡 Predicted medical  charge: ${price:,.2f}")
-       
+
+
+#************************************************#Display for Heart dataset*********************************************************************
 
 #Display Result like overall accuracy and  for heart dataset   
 elif(info["file"]=="heart.csv"):
+
+
+   #predict accuracy of test data
+   acc=accuracy_score(y_test,y_test_cap)
     
-    #find accuracy of test data and display probabality value
-    st.markdown(f"<h3 style=text-align:center;>Model Performance </h3>",unsafe_allow_html=True)
-    acc=accuracy_score(y_test,y_test_cap)
-    st.markdown(f"<h6 style='text-align: center;'>🎯 Model Test Accuracy: {acc*100:.2f}%</h6ss>",unsafe_allow_html=True)
-    out=model.predict_proba(input_mapped_scaled)
-    input_cap=model.predict(input_mapped_scaled)
-    if(input_cap[0]==1):
+    #find confusion matrix
+   fig, ax = plt.subplots(figsize=(5,5))
+   cm = confusion_matrix(y_test, y_test_cap)
+   disp=ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=["Not HeartDisease", "HeartDisease"])
+
+    
+    #find precison score,recalland f1 score
+   precision = precision_score(y_test, y_test_cap)
+   recall = recall_score(y_test, y_test_cap)
+   f1 = f1_score(y_test, y_test_cap)
+
+   disp.plot(ax=ax, cmap="Blues")
+   #display confusion matrix
+   disp.plot(ax=ax)
+   st.pyplot(fig)
+
+   for label in ax.get_xticklabels():
+       label.set_fontsize(8)
+
+   for label in ax.get_yticklabels():
+       label.set_fontsize(8)
+
+   
+    #Display  Acccuracy,Recall,precision,f1 score
+   col1, col2, col3,col4  = st.columns(4)
+   with col1:
+       st.metric(label="Accuracy",value=f"{acc*100:.3f}")
+   with col2:
+         st.metric(label="Precision",value=f"{precision*100:.3f}")
+
+   with col3:
+         st.metric(label="recall:",value=f"{recall*100:.3f}")
+
+   with col4:
+         st.metric(label="f1:",value=f"{f1*100:.3f}")
+    
+   out=model.predict_proba(input_mapped_scaled)
+   input_cap=model.predict(input_mapped_scaled)
+   if(input_cap[0]==1):
         st.error( f"🚨 Heart Disease\n\nConfidence: {out[0][1]*100:.2f}%")
-    else:
+   else:
        st.error(f"✅ No Heart Disease\n\nConfidence:{out[0][0]*100:.2f}%")
-    df_prediction_proba=pd.DataFrame(out)
-    df_prediction_proba.columns=['No Heart Disease','Heart Disease']
+   df_prediction_proba=pd.DataFrame(out)
+   df_prediction_proba.columns=['No Heart Disease','Heart Disease']
     
-    st.subheader('Prediction')
+   st.subheader('Prediction')
     
-    st.dataframe(df_prediction_proba,
+   st.dataframe(df_prediction_proba,
                  column_config={'No Heart Disease':st.column_config.ProgressColumn(
                      "No Heart Disease",
                      format="%.5f",
